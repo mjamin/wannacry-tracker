@@ -1,5 +1,7 @@
 # wannacry-tracker
 
+https://mjamin.github.io/wannacry-tracker/
+
 Tracks the income of the wannacry hackers by adding up balances of the known wannacry bitcoin addresses (via blockchain.info APIs):
 
 - https://blockchain.info/de/address/115p7UMMngoj1pMvkpHijcRdfJNXj6LrLn
