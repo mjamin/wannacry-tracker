@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WannaCry</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { background: #fafafa; }
+    #box { margin: 20vh auto; padding: 2rem; font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 2rem; text-align: center; width: 20rem; background: #fff; border-bottom: 1px solid #ddd; border-radius: .5rem; box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,.075); }
+    #amount-btc { font-size: 2rem; }
+    #amount-usd { font-size: 1rem; color: #999; }
+  </style>
+</head>
+<body>
+  <div id="box">
+      <div id="amount-btc">...</div>
+      <div id="amount-usd">...</div>
+  </div>
+  <script>
+    var formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, });
+
+    var addresses = [
+        "115p7UMMngoj1pMvkpHijcRdfJNXj6LrLn",
+        "12t9YDPgwueZ9NyMgw519p7AA8isjr6SMw",
+        "13AM4VW2dhxYgXeQepoHkHSQuy6NgaEb94"
+    ];
+
+    ajax("https://blockchain.info/q/addressbalance/" + addresses.join("|") + "?confirmations=0", function(r) {
+        var btc = Math.round(new Number(r) / 1000000) / 100;
+        ajax("https://blockchain.info/ticker?cors=true", function(r) {
+            window.document.getElementById("amount-btc").innerText = btc + " BTC";
+            window.document.getElementById("amount-usd").innerText = formatter.format(Math.round(JSON.parse(r)["USD"]["15m"] * btc));
+        }, function() { window.document.getElementById("amount-usd").innerText = "(api error)"; });
+    }, function() { window.document.getElementById("amount-btc").innerText = "(api error)"; });
+
+    function ajax(url, success, error) {
+        var request = new (this.XMLHttpRequest || ActiveXObject)("MSXML2.XMLHTTP.3.0");
+        request.open("GET", url, 1);
+        request.onreadystatechange = function () { request.readyState > 3 && success && success(request.responseText, request); };
+
+        try {
+            request.send()
+        } catch (e) { error && error(); }
+    };
+  </script>
+</body>
+</html>
